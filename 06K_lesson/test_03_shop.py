@@ -26,18 +26,14 @@ def test_shop_total_price(driver):
     driver.find_element(By.ID, "password").send_keys("secret_sauce")
     driver.find_element(By.ID, "login-button").click()
 
-    # Проверка успешного входа
     assert "inventory.html" in driver.current_url, (
         f"Ошибка авторизации. Ожидался переход на 'inventory.html', "
         f"но текущий URL: {driver.current_url}"
     )
 
-    # Добавление товаров в корзину
     driver.find_element(By.ID, "add-to-cart-sauce-labs-backpack").click()
     driver.find_element(By.ID, "add-to-cart-sauce-labs-bolt-t-shirt").click()
     driver.find_element(By.ID, "add-to-cart-sauce-labs-onesie").click()
-
-    # Переход к оформлению заказа
     driver.find_element(By.CLASS_NAME, "shopping_cart_link").click()
     driver.find_element(By.ID, "checkout").click()
     driver.find_element(By.ID, "first-name").send_keys("Иван")
@@ -45,7 +41,6 @@ def test_shop_total_price(driver):
     driver.find_element(By.ID, "postal-code").send_keys("123456")
     driver.find_element(By.ID, "continue").click()
 
-    # Проверка суммы заказа
     total_label = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "summary_total_label"))
     )
