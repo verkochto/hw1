@@ -9,11 +9,11 @@ Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
 class Student(Base):
-    __tablename__ = 'students'
+    __tablename__ = 'student'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    age = Column(Integer)
-    deleted = Column(Boolean, default=False)
+    user_id = Column(Integer, primary_key=True)
+    level = Column(String)
+    education_form = Column(String)
+    subject_id = Column(Integer)
 
 
