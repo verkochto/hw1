@@ -1,40 +1,40 @@
 import pytest
-from db import Session, Student
+from Dbase import Session, Student  # лок. импорт
 
 @pytest.fixture(scope="function")
 def session():
     session = Session()
     yield session
-    session.rollback()  
+    session.rollback()
     session.close()
 
 def test_add_student(session):
-    student = Student(name="Иван Лысенко", age=20)
+    student = Student(user_id=1, level="бакалавриат", education_form="очная", subject_id=101)
     session.add(student)
     session.commit()
 
-    from_db = session.query(Student).filter_by(name="Иван Лысенко").first()
+    from_db = session.query(Student).filter_by(user_id=1).first()
     assert from_db is not None
-    assert from_db.name == "Иван Лысенко"
+    assert from_db.education_form == "очная"
 
-def test_update_student(session):
-    student = Student(name="Анастасия Дуброва", age=21)
+def test_update_student_level(session):
+    student = Student(user_id=2, level="бакалавриат", education_form="очная", subject_id=102)
     session.add(student)
     session.commit()
 
-    student.age = 22
+    student.level = "магистратура"
     session.commit()
 
-    updated = session.query(Student).filter_by(name="Анастасия Дуброва").first()
-    assert updated.age == 22
+    updated = session.query(Student).filter_by(user_id=2).first()
+    assert updated.level == "магистратура"
 
-def test_soft_delete_student(session):
-    student = Student(name="Удаляемый Студент", age=19)
+def test_change_subject(session):
+    student = Student(user_id=3, level="аспирантура", education_form="дистанционная", subject_id=201)
     session.add(student)
     session.commit()
 
-    student.deleted = True 
+    student.subject_id = 202
     session.commit()
 
-    deleted = session.query(Student).filter_by(name="Удаляемый Студент").first()
-    assert deleted.deleted is True
+    updated = session.query(Student).filter_by(user_id=3).first()
+    assert updated.subject_id == 202
