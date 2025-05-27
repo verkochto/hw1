@@ -1,11 +1,10 @@
 import pytest
-from Dbase import Session, Student  # лок. импорт
+from Dbase import Session, Student
 
 @pytest.fixture(scope="function")
 def session():
     session = Session()
     yield session
-    session.rollback()
     session.close()
 
 def test_add_student(session):
@@ -16,6 +15,9 @@ def test_add_student(session):
     from_db = session.query(Student).filter_by(user_id=1).first()
     assert from_db is not None
     assert from_db.education_form == "очная"
+
+    session.delete(from_db)
+    session.commit()
 
 def test_update_student_level(session):
     student = Student(user_id=2, level="бакалавриат", education_form="очная", subject_id=102)
@@ -28,6 +30,10 @@ def test_update_student_level(session):
     updated = session.query(Student).filter_by(user_id=2).first()
     assert updated.level == "магистратура"
 
+    # Удаление
+    session.delete(updated)
+    session.commit()
+
 def test_change_subject(session):
     student = Student(user_id=3, level="аспирантура", education_form="дистанционная", subject_id=201)
     session.add(student)
@@ -38,3 +44,7 @@ def test_change_subject(session):
 
     updated = session.query(Student).filter_by(user_id=3).first()
     assert updated.subject_id == 202
+
+    # Удаление
+    session.delete(updated)
+    session.commit()
